@@ -1,12 +1,12 @@
-// client/src/App.js
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 
 function App() {
   const [data, setData] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
 
-  useEffect(() => {
-    fetch('/api/data') // This will call the Express server
+  const fetchData = () => {
+    setLoading(true);
+    fetch('http://localhost:8001/api/data') // Calls the Express server
       .then((response) => response.json())
       .then((data) => {
         setData(data);
@@ -16,14 +16,15 @@ function App() {
         console.error('Error fetching data:', error);
         setLoading(false);
       });
-  }, []);
+  };
 
   return (
     <div className="App">
       <h1>React Express Proxy Example</h1>
-      {loading ? (
-        <p>Loading data...</p>
-      ) : (
+      <button onClick={fetchData} disabled={loading}>
+        {loading ? 'Loading...' : 'Fetch Data'}
+      </button>
+      {data.length > 0 && (
         <ul>
           {data.map((post) => (
             <li key={post.id}>{post.title}</li>
